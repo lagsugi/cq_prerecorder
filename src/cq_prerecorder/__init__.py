@@ -48,8 +48,7 @@ def riff_chunk(tag: bytes, payload: bytes) -> bytes:
 
 def build_voice_tx_wav(pcm: bytes, name: str, radio: Radio) -> bytes:
     model = f"IC-{radio.number}"
-    display_name = "funahashi" if name == "ふなはし" else name
-    title = f"{model} Voice TX Data {display_name[:16]:16}"
+    title = f"{model} Voice TX Data {name[:16]:16}"
     info = b"INFO" + b"".join(
         riff_chunk(tag, value.encode("ascii", errors="replace") + b"\0")
         for tag, value in (

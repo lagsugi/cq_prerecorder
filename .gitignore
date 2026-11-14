@@ -10,6 +10,9 @@ wheels/
 .venv/
 
 # Local recordings and generated WAV files
-/submitted_wav/
-/wav_IC7300/
-/wav_IC7610/
+/submitted_wav/*
+!/submitted_wav/.gitkeep
+/wav_IC7300/*
+!/wav_IC7300/.gitkeep
+/wav_IC7610/*
+!/wav_IC7610/.gitkeep
