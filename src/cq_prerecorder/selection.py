@@ -71,8 +71,8 @@ class Terminal:
 
 def select_mode(terminal: Terminal) -> str | None:
     options = [
-        ("sdcard", "SDカード用WAVを作る", "T1〜T8 に選んだ音声を両機種の sdcard/ に出力"),
-        ("all", "全音声を変換する", "元のファイル名で両機種の出力フォルダーに保存"),
+        ("sdcard", "SDカード用WAVを作る", "T1〜T8 に選んだ音声を3機種の sdcard/ に出力"),
+        ("all", "全音声を変換する", "元のファイル名で3機種の出力フォルダーに保存"),
     ]
     selected = 0
     while True:
@@ -135,7 +135,7 @@ def select_slots(terminal: Terminal, sources: list[Path]) -> dict[int, Path] | N
             for index in range(first, last)
         ]
         lines = [
-            "SDカード用WAV  |  IC-7300 / IC-7610",
+            "SDカード用WAV  |  IC-7300 / IC-7610 / IC-9700",
             "",
             f"{fit_cell(f'割り当て  {len(slots)}/{SLOT_COUNT}', left_width)}  │  "
             f"音声候補  {first + 1}–{last} / {len(sources)}",
