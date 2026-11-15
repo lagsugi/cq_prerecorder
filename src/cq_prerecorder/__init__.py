@@ -14,14 +14,17 @@ from .selection import Terminal, select_mode, select_slots
 class Radio:
     number: str
     sample_rate: int
-    firmware: str
-    recording_date: str
+    firmware: str | None
+    recording_date: str | None
 
 
 # Match the format and metadata from each radio's Voice TX recording.
 RADIOS = (
     Radio("7300", 8000, "1.42", "2000-07-05"),
     Radio("7610", 16000, "1.30", "2026-04-25"),
+    # Experimental: IC-9700 has not yet been checked on real hardware.
+    # Do not invent firmware/date metadata without a radio-recorded WAV.
+    Radio("9700", 16000, None, None),
 )
 
 
@@ -49,13 +52,15 @@ def riff_chunk(tag: bytes, payload: bytes) -> bytes:
 def build_voice_tx_wav(pcm: bytes, name: str, radio: Radio) -> bytes:
     model = f"IC-{radio.number}"
     title = f"{model} Voice TX Data {name[:16]:16}"
+    metadata = []
+    if radio.recording_date is not None:
+        metadata.append((b"ICRD", radio.recording_date))
+    metadata.append((b"INAM", title))
+    if radio.firmware is not None:
+        metadata.append((b"ISFT", f"{model} Ver{radio.firmware}"))
     info = b"INFO" + b"".join(
         riff_chunk(tag, value.encode("ascii", errors="replace") + b"\0")
-        for tag, value in (
-            (b"ICRD", radio.recording_date),
-            (b"INAM", title),
-            (b"ISFT", f"{model} Ver{radio.firmware}"),
-        )
+        for tag, value in metadata
     )
     # 16-bit mono PCM. Icom recordings place LIST/INFO after data.
     fmt = struct.pack("<HHIIHH", 1, 1, radio.sample_rate, radio.sample_rate * 2, 2, 16)
@@ -108,7 +113,7 @@ def export_wavs(
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="submitted_wav の WAV を IC-7300／IC-7610 の Voice TX 用に変換します。",
+        description="submitted_wav の WAV を IC-7300／IC-7610／IC-9700 の Voice TX 用に変換します。",
     )
     parser.add_argument(
         "--convert-only",
