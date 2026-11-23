@@ -1,4 +1,4 @@
-# CQ Prerecorder
+# ICOM CQ Prerecorder
 
 IC-7300・IC-7610・IC-9700のボイス送信（Voice TX）用にWAVを変換します。
 
